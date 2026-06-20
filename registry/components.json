@@ -1,0 +1,14 @@
+{
+  "pagination": {
+    "files": 
+    [
+        "components/pagination.tsx"
+    ]
+  },
+  "button":{
+    "files":
+    [
+        "components/button.tsx"
+    ]
+  }
+}
