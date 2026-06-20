@@ -11,7 +11,7 @@ const component = process.argv[3];
 const projectRoot = process.cwd();
 
 function logTitle() {
-  console.log("\n🚀 Quantum CLI\n");
+  console.log("\n🚀 Nexonx CLI\n");
 }
 
 function listComponents() {
@@ -23,7 +23,7 @@ function listComponents() {
   });
 
   console.log("\nUsage:");
-  console.log("  npx pageflow-cli add <component>\n");
+  console.log("npx nexonx add <component>\n");
 }
 
 function getPackageJson() {
@@ -280,9 +280,9 @@ if (command === "add") {
 }
 
 console.log(`
-Quantum CLI
+Nexonx CLI
 
 Commands:
-  npx quantum-cli list
-  npx quantum-cli add <component>
+  npx nexonx list
+  npx nexonx add <component>
 `);

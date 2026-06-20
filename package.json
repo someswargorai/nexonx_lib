@@ -1,9 +1,9 @@
 {
-  "name": "component_lib",
-  "version": "1.0.0",
+  "name": "nexonx",
+  "version": "1.0.1",
   "main": "cli.js",
   "bin": {
-    "quantum_cli": "./cli/cli.js"
+    "nexonx_cli": "./cli/cli.js"
   },
   "files": [
     "cli",
