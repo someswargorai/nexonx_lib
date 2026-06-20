@@ -1,8 +1,8 @@
 {
-  "pagination": {
+  "card": {
     "files": 
     [
-        "components/pagination.tsx"
+        "components/card.tsx"
     ]
   },
   "button":{
