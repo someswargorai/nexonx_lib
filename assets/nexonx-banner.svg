@@ -1,0 +1,58 @@
+<svg width="1280" height="640" viewBox="0 0 1280 640" fill="none" xmlns="http://www.w3.org/2000/svg" role="img" aria-labelledby="title desc">
+  <title id="title">Nexonx component library banner</title>
+  <desc id="desc">A dark interface-style banner showing a component library, CLI command, buttons, and pagination controls.</desc>
+  <rect width="1280" height="640" rx="0" fill="#0A0A0B"/>
+  <path d="M0 0H1280V640H0V0Z" fill="url(#paint0_radial)"/>
+  <path d="M0 0H1280V640H0V0Z" fill="url(#paint1_linear)" opacity="0.85"/>
+  <g opacity="0.3">
+    <path d="M96 120H1184" stroke="#27272A"/>
+    <path d="M96 200H1184" stroke="#27272A"/>
+    <path d="M96 280H1184" stroke="#27272A"/>
+    <path d="M96 360H1184" stroke="#27272A"/>
+    <path d="M96 440H1184" stroke="#27272A"/>
+    <path d="M96 520H1184" stroke="#27272A"/>
+    <path d="M160 72V568" stroke="#27272A"/>
+    <path d="M320 72V568" stroke="#27272A"/>
+    <path d="M480 72V568" stroke="#27272A"/>
+    <path d="M640 72V568" stroke="#27272A"/>
+    <path d="M800 72V568" stroke="#27272A"/>
+    <path d="M960 72V568" stroke="#27272A"/>
+    <path d="M1120 72V568" stroke="#27272A"/>
+  </g>
+  <rect x="96" y="86" width="1088" height="468" rx="28" fill="#111113" stroke="#27272A"/>
+  <rect x="128" y="118" width="1024" height="64" rx="16" fill="#18181B" stroke="#2F2F35"/>
+  <circle cx="160" cy="150" r="8" fill="#EF4444"/>
+  <circle cx="186" cy="150" r="8" fill="#F59E0B"/>
+  <circle cx="212" cy="150" r="8" fill="#22C55E"/>
+  <rect x="252" y="138" width="204" height="24" rx="12" fill="#27272A"/>
+  <rect x="480" y="138" width="112" height="24" rx="12" fill="#3F3F46"/>
+  <rect x="128" y="214" width="418" height="256" rx="22" fill="#F8FAFC"/>
+  <rect x="160" y="246" width="170" height="18" rx="9" fill="#18181B"/>
+  <rect x="160" y="278" width="312" height="12" rx="6" fill="#CBD5E1"/>
+  <rect x="160" y="304" width="240" height="12" rx="6" fill="#E2E8F0"/>
+  <rect x="160" y="350" width="128" height="44" rx="6" fill="#09090B"/>
+  <rect x="304" y="350" width="126" height="44" rx="6" fill="#E4E4E7"/>
+  <rect x="160" y="426" width="44" height="32" rx="7" fill="#FFFFFF" stroke="#D4D4D8"/>
+  <rect x="214" y="426" width="44" height="32" rx="7" fill="#09090B"/>
+  <rect x="268" y="426" width="44" height="32" rx="7" fill="#FFFFFF" stroke="#D4D4D8"/>
+  <rect x="322" y="426" width="44" height="32" rx="7" fill="#FFFFFF" stroke="#D4D4D8"/>
+  <rect x="592" y="214" width="560" height="256" rx="22" fill="#18181B" stroke="#2F2F35"/>
+  <text x="632" y="270" fill="#FAFAFA" font-family="Consolas, 'Liberation Mono', monospace" font-size="32" font-weight="700">nexonx</text>
+  <text x="632" y="316" fill="#A1A1AA" font-family="Consolas, 'Liberation Mono', monospace" font-size="22">npx nexonx add button</text>
+  <rect x="632" y="358" width="412" height="52" rx="10" fill="#09090B" stroke="#3F3F46"/>
+  <text x="660" y="392" fill="#E4E4E7" font-family="Consolas, 'Liberation Mono', monospace" font-size="20">components/button.tsx</text>
+  <path d="M1072 382L1094 404L1130 360" stroke="#22C55E" stroke-width="10" stroke-linecap="round" stroke-linejoin="round"/>
+  <rect x="744" y="512" width="124" height="12" rx="6" fill="#3F3F46"/>
+  <rect x="884" y="512" width="252" height="12" rx="6" fill="#27272A"/>
+  <defs>
+    <radialGradient id="paint0_radial" cx="0" cy="0" r="1" gradientUnits="userSpaceOnUse" gradientTransform="translate(272 116) rotate(37.5686) scale(739.616 467.825)">
+      <stop stop-color="#2563EB" stop-opacity="0.5"/>
+      <stop offset="0.48" stop-color="#0A0A0B" stop-opacity="0"/>
+    </radialGradient>
+    <linearGradient id="paint1_linear" x1="1110" y1="30" x2="260" y2="638" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#22C55E" stop-opacity="0.28"/>
+      <stop offset="0.38" stop-color="#111113" stop-opacity="0"/>
+      <stop offset="1" stop-color="#7C3AED" stop-opacity="0.16"/>
+    </linearGradient>
+  </defs>
+</svg>
