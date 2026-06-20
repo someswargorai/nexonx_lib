@@ -1,59 +1,64 @@
 # Nexonx
 
-![Nexonx component library banner](assets/nexonx-banner.svg)
+![Nexonx component library banner](assets/banner.png)
 
-Copy-ready React components for modern Tailwind apps. Nexonx gives you a tiny CLI that installs the component source directly into your project, so you can own the code, edit it freely, and keep your UI close to your app.
+Nexonx is a small, source-first React component CLI for Tailwind projects. Instead of locking UI behind a package API, it copies clean `.tsx` components into your app so you can use them immediately, customize them freely, and keep complete control over your design system.
 
-## Why Nexonx?
+Current package version: `1.0.3`
 
-- **Own your components**: components are copied into your codebase, not hidden inside a package.
-- **Tailwind-first**: styles are readable utility classes that are easy to customize.
-- **TypeScript-ready**: components ship as `.tsx` files with typed props.
-- **Smart setup**: the CLI checks for common dependencies and installs what the selected component needs.
-- **Small by design**: start with only the components you ask for.
+## What Makes It Useful
 
-## Available Components
+- **Copy-and-own workflow**: add components directly into your project source.
+- **Tailwind-native styling**: simple utility classes that are easy to change.
+- **TypeScript components**: typed props and variant support out of the box.
+- **CLI-powered setup**: installs missing component dependencies when needed.
+- **Small registry**: only install the components you actually want.
 
-| Component | Command | What it gives you |
+## Components
+
+| Component | Add command | Best for |
 | --- | --- | --- |
-| `button` | `npx nexonx add button` | A variant-driven button built with `class-variance-authority` and Radix `Slot` support. |
-| `pagination` | `npx nexonx add pagination` | A responsive pagination control with page jumps, limit selection, Lucide icons, and Framer Motion dropdown animation. |
+| `button` | `npx nexonx add button` | Actions, links, icon buttons, variant-based UI controls. |
+| `card` | `npx nexonx add card` | Product cards, content previews, dashboard panels, image cards, feature blocks. |
 
 ## Quick Start
 
-Run this from the root of your React or Next.js project:
+Run this inside your React, Vite, or Next.js project:
 
 ```bash
 npx nexonx list
-npx nexonx add button
 ```
 
-You can also add pagination:
-
-```bash
-npx nexonx add pagination
-```
-
-The CLI copies component files into your project and installs missing packages such as Tailwind, `clsx`, `tailwind-merge`, `@radix-ui/react-slot`, `class-variance-authority`, `lucide-react`, and `framer-motion` when needed.
-
-## Usage
-
-### Button
-
-After running:
+Then add a component:
 
 ```bash
 npx nexonx add button
 ```
 
-Use it in your app:
+Or:
+
+```bash
+npx nexonx add card
+```
+
+Nexonx copies the selected component into your project and prepares common dependencies such as Tailwind CSS, `clsx`, `tailwind-merge`, `@radix-ui/react-slot`, `class-variance-authority`, `lucide-react`, and `framer-motion` when they are missing.
+
+## Button Usage
+
+Add it:
+
+```bash
+npx nexonx add button
+```
+
+Use it:
 
 ```tsx
 import { Button } from "@/components/button";
 
-export function Example() {
+export function Actions() {
   return (
-    <div className="flex gap-3">
+    <div className="flex flex-wrap gap-3">
       <Button>Get started</Button>
       <Button variant="secondary">Preview</Button>
       <Button variant="outline" size="sm">
@@ -64,7 +69,7 @@ export function Example() {
 }
 ```
 
-Supported variants:
+Available variants:
 
 ```tsx
 <Button variant="default" />
@@ -74,7 +79,7 @@ Supported variants:
 <Button variant="destructive" />
 ```
 
-Supported sizes:
+Available sizes:
 
 ```tsx
 <Button size="sm" />
@@ -83,13 +88,13 @@ Supported sizes:
 <Button size="icon" />
 ```
 
-Use `asChild` when you want the button styles on another element, such as a link:
+Use `asChild` when you want button styling on another component:
 
 ```tsx
 import Link from "next/link";
 import { Button } from "@/components/button";
 
-export function LinkButton() {
+export function DashboardLink() {
   return (
     <Button asChild>
       <Link href="/dashboard">Open dashboard</Link>
@@ -98,83 +103,122 @@ export function LinkButton() {
 }
 ```
 
-### Pagination
+## Card Usage
 
-After running:
+Add it:
 
 ```bash
-npx nexonx add pagination
+npx nexonx add card
 ```
 
-Use it with state from your table, list, or API response:
+Use it:
 
 ```tsx
-import { useState } from "react";
-import PaginationBasic from "@/components/pagination";
+import { Card } from "@/components/card";
 
-export function UsersPagination() {
-  const [page, setPage] = useState(1);
-  const [limit, setLimit] = useState(10);
-
-  const totalCount = 248;
-  const totalPages = Math.ceil(totalCount / limit);
-
+export function ProductCard() {
   return (
-    <PaginationBasic
-      totalCount={totalCount}
-      limit={limit}
-      currentPage={page}
-      totalPages={totalPages}
-      setLimit={setLimit}
-      onPageChange={setPage}
+    <Card
+      title="Nexonx UI Kit"
+      description="A clean component copied straight into your app, ready to customize."
+      imageSrc="/preview.png"
+      imageAlt="Nexonx preview"
+      variant="elevated"
     />
   );
 }
 ```
 
+Add custom content inside the card:
+
+```tsx
+import { Card } from "@/components/card";
+import { Button } from "@/components/button";
+
+export function UpgradeCard() {
+  return (
+    <Card
+      title="Build faster"
+      description="Start with a polished base and make it yours."
+      variant="default"
+      size="md"
+    >
+      <div className="mt-4">
+        <Button size="sm">Upgrade</Button>
+      </div>
+    </Card>
+  );
+}
+```
+
+Available card variants:
+
+```tsx
+<Card variant="default" />
+<Card variant="secondary" />
+<Card variant="destructive" />
+<Card variant="outline" />
+<Card variant="ghost" />
+<Card variant="elevated" />
+```
+
+Available card sizes:
+
+```tsx
+<Card size="sm" />
+<Card size="md" />
+<Card size="lg" />
+```
+
 ## CLI Commands
+
+List available components:
 
 ```bash
 npx nexonx list
 ```
 
-Shows every component currently available in the registry.
+Add a component:
 
 ```bash
 npx nexonx add <component>
 ```
 
-Copies the selected component into your project and prepares required dependencies.
-
-If you install the package globally, the exposed binary is:
+Global binary:
 
 ```bash
 nexonx_cli list
 nexonx_cli add button
+nexonx_cli add card
 ```
 
-## What Gets Added
+## What Gets Copied
 
 For `button`:
 
 ```txt
 components/button.tsx
+```
+
+For `card`:
+
+```txt
+components/card.tsx
+```
+
+Nexonx also creates this utility when it is missing:
+
+```txt
 lib/utils/cn.tsx
 ```
 
-For `pagination`:
-
-```txt
-components/pagination.tsx
-```
-
-The CLI may also create:
+Depending on the target app, the CLI may also create:
 
 ```txt
 postcss.config.mjs
 ```
 
-And it may add a Tailwind import to one of these files if it exists:
+And it can add a Tailwind import to one of these files:
 
 ```txt
 app/globals.css
@@ -186,40 +230,42 @@ styles/globals.css
 
 ```txt
 component_lib/
+|-- assets/
+|   |-- banner.png
+|   `-- nexonx-banner.svg
 |-- cli/
 |   `-- cli.js
 |-- components/
 |   |-- button.tsx
-|   `-- pagination.tsx
+|   `-- card.tsx
 |-- lib/
 |   `-- utils/
 |       `-- cn.tsx
 |-- registry/
 |   `-- components.json
-|-- assets/
-|   `-- nexonx-banner.svg
 |-- package.json
+|-- package-lock.json
 `-- README.md
 ```
 
-## Adding A New Component
+## Adding More Components
 
-1. Create the component in `components/`.
-2. Add it to `registry/components.json`.
-3. Include every file the component needs in the `files` array.
-4. Run the CLI from a test app to confirm the files copy correctly.
+1. Create the component inside `components/`.
+2. Register it in `registry/components.json`.
+3. Add every file the component needs to its `files` array.
+4. Test it from another app with the local CLI.
 
-Example registry entry:
+Example:
 
 ```json
 {
-  "card": {
-    "files": ["components/card.tsx"]
+  "badge": {
+    "files": ["components/badge.tsx"]
   }
 }
 ```
 
-## Development
+## Local Development
 
 Install dependencies:
 
@@ -227,25 +273,26 @@ Install dependencies:
 npm install
 ```
 
-List registered components locally:
+List registered components:
 
 ```bash
 node cli/cli.js list
 ```
 
-Add a component into another project while testing:
+Test adding a component from another project:
 
 ```bash
-node path/to/component_lib/cli/cli.js add button
+node path/to/component_lib/cli/cli.js add card
 ```
 
 ## Requirements
 
-- React with TypeScript
+- React
+- TypeScript
 - Tailwind CSS
-- A package manager: npm, pnpm, or yarn
+- npm, pnpm, or yarn
 
-The CLI detects the package manager from lockfiles and falls back to npm.
+The CLI detects `pnpm-lock.yaml` and `yarn.lock`; otherwise, it uses npm.
 
 ## License
 
