@@ -1,4 +1,5 @@
 # Nexonx
+📦 npm: https://www.npmjs.com/package/nexonx
 
 <img
   src="https://res.cloudinary.com/dpacclyw4/image/upload/v1781975840/banner_in7wjs.png"
@@ -8,7 +9,7 @@
 
 Nexonx is a small, source-first React component CLI for Tailwind projects. Instead of locking UI behind a package API, it copies clean `.tsx` components into your app so you can use them immediately, customize them freely, and keep complete control over your design system.
 
-Current package version: `1.0.5`
+Current package version: `1.0.6`
 
 ## What Makes It Useful
 
