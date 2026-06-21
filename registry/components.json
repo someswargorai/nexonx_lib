@@ -1,14 +1,42 @@
 {
   "card": {
-    "files": 
-    [
-        "components/card.tsx"
+    "files": [
+      "components/card.tsx"
     ]
   },
-  "button":{
-    "files":
-    [
-        "components/button.tsx"
+  "button": {
+    "files": [
+      "components/button.tsx"
+    ]
+  },
+  "loader": {
+    "files": [
+      "components/loader.tsx"
+    ]
+  },
+  "avatar": {
+    "files": [
+      "components/avatar.tsx"
+    ]
+  },
+  "separator": {
+    "files": [
+      "components/separator.tsx"
+    ]
+  },
+  "typography": {
+    "files": [
+      "components/typography.tsx"
+    ]
+  },
+  "icon": {
+    "files": [
+      "components/icon.tsx"
+    ]
+  },
+  "badge": {
+    "files": [
+      "components/badge.tsx"
     ]
   }
 }

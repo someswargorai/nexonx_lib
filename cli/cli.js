@@ -7,7 +7,7 @@ const { execSync } = require("child_process");
 const registry = require("../registry/components.json");
 
 const command = process.argv[2];
-const component = process.argv[3];
+const args = process.argv.slice(3);
 const projectRoot = process.cwd();
 
 function logTitle() {
@@ -23,7 +23,9 @@ function listComponents() {
   });
 
   console.log("\nUsage:");
-  console.log("npx nexonx add <component>\n");
+  console.log("npx nexonx add <component>");
+  console.log("npx nexonx add <component1> <component2> ...");
+  console.log("npx nexonx add all\n");
 }
 
 function getPackageJson() {
@@ -153,21 +155,21 @@ function createClsx() {
     recursive: true,
   });
 
-  const file = path.join(dir, "cn.tsx");
+  const file = path.join(dir, "cn.ts");
 
   if (fs.existsSync(file)) return;
 
   const content = `import { clsx } from "clsx";
-        import { twMerge } from "tailwind-merge";
+import { twMerge } from "tailwind-merge";
 
-        export function cn(...inputs: any[]) {
-        return twMerge(clsx(inputs));
-        }
-    `;
+export function cn(...inputs: any[]) {
+  return twMerge(clsx(inputs));
+}
+`;
 
   fs.writeFileSync(file, content);
 
-  console.log("✔ Added lib/utils.ts");
+  console.log("✔ Added lib/utils/cn.ts");
 }
 
 function setupTailwind() {
@@ -209,11 +211,11 @@ function setupLucide() {
 function setupFramerMotion() {
   const pkg = getPackageJson();
 
-  const hasLucide =
+  const hasFramerMotion =
     pkg.dependencies?.["framer-motion"] ||
     pkg.devDependencies?.["framer-motion"];
 
-  if (hasLucide) return;
+  if (hasFramerMotion) return;
 
   console.log("⚡ framer-motion not detected. Installing...\n");
 
@@ -225,7 +227,11 @@ function setupFramerMotion() {
 
   console.log("\n✔ framer-motion installed\n");
 }
+
 function copyFiles(files) {
+  let addedCount = 0;
+  let skippedCount = 0;
+
   files.forEach((file) => {
     const source = path.join(__dirname, "..", file);
     const destination = path.join(projectRoot, file);
@@ -238,30 +244,105 @@ function copyFiles(files) {
 
     if (fs.existsSync(destination)) {
       console.log(`⚠ Skipped ${file} (already exists)`);
+      skippedCount++;
       return;
     }
 
     fs.copyFileSync(source, destination);
 
     console.log(`✔ Added ${file}`);
-    console.log("\n✨ Done! Your component is ready.\n");
+    addedCount++;
   });
+
+  return { addedCount, skippedCount };
 }
 
-function addComponent(name) {
-  const data = registry[name];
+/**
+ * Resolves the list of component names the user asked for.
+ * Supports:
+ *   nexonx add button
+ *   nexonx add button card avatar
+ *   nexonx add all
+ * "all" can appear anywhere in the args and short-circuits to every
+ * registry entry, deduped, case-insensitively matched against registry keys.
+ */
+function resolveRequestedComponents(rawNames) {
+  if (rawNames.length === 0) {
+    return { names: [], invalid: [] };
+  }
 
-  if (!data) {
-    console.log(`❌ Component "${name}" not found\n`);
+  const normalized = rawNames.map((n) => n.toLowerCase());
+
+  if (normalized.includes("all")) {
+    return { names: Object.keys(registry), invalid: [] };
+  }
+
+  const registryKeys = Object.keys(registry);
+  const valid = [];
+  const invalid = [];
+  const seen = new Set();
+
+  normalized.forEach((name, i) => {
+    const match = registryKeys.find((key) => key.toLowerCase() === name);
+
+    if (!match) {
+      invalid.push(rawNames[i]);
+      return;
+    }
+
+    if (!seen.has(match)) {
+      seen.add(match);
+      valid.push(match);
+    }
+  });
+
+  return { names: valid, invalid };
+}
+
+function addComponents(rawNames) {
+  const { names, invalid } = resolveRequestedComponents(rawNames);
+
+  if (invalid.length > 0) {
+    invalid.forEach((name) => {
+      console.log(`❌ Component "${name}" not found`);
+    });
+  }
+
+  if (names.length === 0) {
+    if (invalid.length === 0) {
+      console.log("❌ Please specify a component\n");
+    } else {
+      console.log("");
+    }
     process.exit(1);
   }
 
   logTitle();
 
+  console.log(`Adding: ${names.join(", ")}\n`);
+
   setupTailwind();
   setupLucide();
   setupFramerMotion();
-  copyFiles(data.files);
+
+  let totalAdded = 0;
+  let totalSkipped = 0;
+
+  names.forEach((name) => {
+    const data = registry[name];
+    console.log(`\n— ${name} —`);
+
+    const { addedCount, skippedCount } = copyFiles(data.files);
+    totalAdded += addedCount;
+    totalSkipped += skippedCount;
+  });
+
+  console.log("\n✨ Done!");
+  console.log(`   ${totalAdded} file(s) added, ${totalSkipped} skipped.\n`);
+
+  if (invalid.length > 0) {
+    process.exitCode = 1;
+  }
 }
 
 if (command === "list") {
@@ -270,13 +351,8 @@ if (command === "list") {
 }
 
 if (command === "add") {
-  if (!component) {
-    console.log("❌ Please specify a component\n");
-    process.exit(1);
-  }
-
-  addComponent(component);
-  process.exit(0);
+  addComponents(args);
+  process.exit(process.exitCode || 0);
 }
 
 console.log(`
@@ -285,4 +361,6 @@ Nexonx CLI
 Commands:
   npx nexonx list
   npx nexonx add <component>
+  npx nexonx add <component1> <component2> ...
+  npx nexonx add all
 `);
