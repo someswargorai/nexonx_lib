@@ -9,7 +9,7 @@
 
 Nexonx is a small, source-first React component CLI for Tailwind projects. Instead of locking UI behind a package API, it copies clean `.tsx` components into your app so you can use them immediately, customize them freely, and keep complete control over your design system.
 
-Current package version: `1.0.6`
+Current package version: `1.0.7`
 
 ## What Makes It Useful
 
@@ -23,8 +23,14 @@ Current package version: `1.0.6`
 
 | Component | Add command | Best for |
 | --- | --- | --- |
+| `avatar` | `npx nexonx add avatar` | User profile pictures, initials fallback, online status indicators. |
+| `badge` | `npx nexonx add badge` | Status labels, tags, notification counts, category chips. |
 | `button` | `npx nexonx add button` | Actions, links, icon buttons, variant-based UI controls. |
 | `card` | `npx nexonx add card` | Product cards, content previews, dashboard panels, image cards, feature blocks. |
+| `icon` | `npx nexonx add icon` | Consistent Lucide icon rendering with size and color variants. |
+| `loader` | `npx nexonx add loader` | Spinning loading indicators for async states and skeleton screens. |
+| `separator` | `npx nexonx add separator` | Horizontal or vertical dividers between UI sections. |
+| `typography` | `npx nexonx add typography` | Semantic headings, body text, labels, and blockquotes with consistent styling. |
 
 ## Quick Start
 
@@ -40,13 +46,114 @@ Then add a component:
 npx nexonx add button
 ```
 
-Or:
+Nexonx copies the selected component into your project and prepares common dependencies such as Tailwind CSS, `clsx`, `tailwind-merge`, `@radix-ui/react-slot`, `class-variance-authority`, `lucide-react`, and `framer-motion` when they are missing.
+
+## Avatar Usage
+
+Add it:
 
 ```bash
-npx nexonx add card
+npx nexonx add avatar
 ```
 
-Nexonx copies the selected component into your project and prepares common dependencies such as Tailwind CSS, `clsx`, `tailwind-merge`, `@radix-ui/react-slot`, `class-variance-authority`, `lucide-react`, and `framer-motion` when they are missing.
+Use it:
+
+```tsx
+import { Avatar } from "@/components/avatar";
+
+export function UserProfile() {
+  return (
+    <div className="flex items-center gap-3">
+      {/* With image */}
+      <Avatar src="/user.png" alt="Jane Doe" name="Jane Doe" status="online" />
+
+      {/* Initials fallback */}
+      <Avatar name="John Smith" size="lg" shape="square" />
+
+      {/* Icon fallback */}
+      <Avatar size="sm" />
+    </div>
+  );
+}
+```
+
+Available shapes:
+
+```tsx
+<Avatar shape="circle" />   {/* default */}
+<Avatar shape="square" />
+```
+
+Available sizes:
+
+```tsx
+<Avatar size="xs" />
+<Avatar size="sm" />
+<Avatar size="md" />   {/* default */}
+<Avatar size="lg" />
+<Avatar size="xl" />
+```
+
+Available status values:
+
+```tsx
+<Avatar status="online" />
+<Avatar status="offline" />
+<Avatar status="away" />
+<Avatar status="busy" />
+```
+
+Pass `showStatus={false}` to hide the status dot even when a `status` value is set.
+
+## Badge Usage
+
+Add it:
+
+```bash
+npx nexonx add badge
+```
+
+Use it:
+
+```tsx
+import { Badge } from "@/components/badge";
+
+export function Labels() {
+  return (
+    <div className="flex flex-wrap gap-2">
+      <Badge>Default</Badge>
+      <Badge variant="primary">Primary</Badge>
+      <Badge variant="success" dot>Live</Badge>
+      <Badge variant="danger" size="sm">Error</Badge>
+    </div>
+  );
+}
+```
+
+Available variants:
+
+```tsx
+<Badge variant="default" />
+<Badge variant="primary" />
+<Badge variant="success" />
+<Badge variant="warning" />
+<Badge variant="danger" />
+<Badge variant="outline" />
+```
+
+Available sizes:
+
+```tsx
+<Badge size="sm" />
+<Badge size="md" />   {/* default */}
+<Badge size="lg" />
+```
+
+Pass `dot` to render a small colored dot before the label:
+
+```tsx
+<Badge variant="success" dot>Active</Badge>
+```
 
 ## Button Usage
 
@@ -175,6 +282,198 @@ Available card sizes:
 <Card size="lg" />
 ```
 
+## Icon Usage
+
+Add it:
+
+```bash
+npx nexonx add icon
+```
+
+Use it:
+
+```tsx
+import { Icon } from "@/components/icon";
+import { Star, AlertCircle } from "lucide-react";
+
+export function IconExamples() {
+  return (
+    <div className="flex items-center gap-3">
+      <Icon icon={Star} size="md" color="primary" />
+      <Icon icon={AlertCircle} size="lg" color="danger" label="Error" />
+      <Icon icon={Star} size="sm" color="muted" />
+    </div>
+  );
+}
+```
+
+Available sizes:
+
+```tsx
+<Icon icon={Star} size="xs" />
+<Icon icon={Star} size="sm" />   {/* default */}
+<Icon icon={Star} size="md" />
+<Icon icon={Star} size="lg" />
+<Icon icon={Star} size="xl" />
+```
+
+Available colors:
+
+```tsx
+<Icon icon={Star} color="default" />
+<Icon icon={Star} color="muted" />
+<Icon icon={Star} color="primary" />
+<Icon icon={Star} color="success" />
+<Icon icon={Star} color="warning" />
+<Icon icon={Star} color="danger" />
+<Icon icon={Star} color="current" />
+```
+
+Pass a `label` to make the icon accessible to screen readers:
+
+```tsx
+<Icon icon={AlertCircle} label="Warning" />
+```
+
+## Loader Usage
+
+Add it:
+
+```bash
+npx nexonx add loader
+```
+
+Use it:
+
+```tsx
+import { Loader } from "@/components/loader";
+
+export function SaveButton({ saving }: { saving: boolean }) {
+  return (
+    <button disabled={saving}>
+      {saving ? <Loader size="sm" /> : "Save"}
+    </button>
+  );
+}
+```
+
+Available variants:
+
+```tsx
+<Loader variant="default" />
+<Loader variant="muted" />
+<Loader variant="destructive" />
+<Loader variant="outline" />
+```
+
+Available sizes:
+
+```tsx
+<Loader size="xs" />
+<Loader size="sm" />   {/* default */}
+<Loader size="md" />
+<Loader size="lg" />
+<Loader size="xl" />
+```
+
+Pass a custom `label` for accessibility (defaults to `"Loading"`):
+
+```tsx
+<Loader label="Saving changes…" />
+```
+
+## Separator Usage
+
+Add it:
+
+```bash
+npx nexonx add separator
+```
+
+Use it:
+
+```tsx
+import { Separator } from "@/components/separator";
+
+export function SectionDivider() {
+  return (
+    <div>
+      <p>Above</p>
+      <Separator />
+      <p>Below</p>
+    </div>
+  );
+}
+```
+
+Available orientations:
+
+```tsx
+<Separator orientation="horizontal" />   {/* default */}
+<Separator orientation="vertical" />
+```
+
+By default the separator is decorative (`role="none"`). Pass `decorative={false}` to expose it as a semantic landmark:
+
+```tsx
+<Separator decorative={false} />
+```
+
+## Typography Usage
+
+Add it:
+
+```bash
+npx nexonx add typography
+```
+
+Use it:
+
+```tsx
+import { Typography } from "@/components/typography";
+
+export function Article() {
+  return (
+    <div>
+      <Typography as="h1">Getting started</Typography>
+      <Typography as="p">
+        Nexonx copies components directly into your source code.
+      </Typography>
+      <Typography as="blockquote">
+        Design is not just what it looks like — it's how it works.
+      </Typography>
+      <Typography as="label">Field label</Typography>
+    </div>
+  );
+}
+```
+
+Available `as` values:
+
+```tsx
+<Typography as="h1" />
+<Typography as="h2" />
+<Typography as="h3" />
+<Typography as="h4" />
+<Typography as="h5" />
+<Typography as="h6" />
+<Typography as="p" />       {/* default */}
+<Typography as="span" />
+<Typography as="div" />
+<Typography as="label" />
+<Typography as="blockquote" />
+```
+
+Clamp long text with the `lines` prop:
+
+```tsx
+<Typography as="p" lines={2}>
+  This long paragraph will be truncated after two lines…
+</Typography>
+```
+
+Supported `lines` values: `1`, `2`, `3`, `4`.
+
 ## CLI Commands
 
 List available components:
@@ -199,16 +498,17 @@ nexonx_cli add card
 
 ## What Gets Copied
 
-For `button`:
+Each component copies a single file into your project:
 
 ```txt
+components/avatar.tsx
+components/badge.tsx
 components/button.tsx
-```
-
-For `card`:
-
-```txt
 components/card.tsx
+components/icon.tsx
+components/loader.tsx
+components/separator.tsx
+components/typography.tsx
 ```
 
 Nexonx also creates this utility when it is missing:
@@ -241,8 +541,14 @@ component_lib/
 |-- cli/
 |   `-- cli.js
 |-- components/
+|   |-- avatar.tsx
+|   |-- badge.tsx
 |   |-- button.tsx
-|   `-- card.tsx
+|   |-- card.tsx
+|   |-- icon.tsx
+|   |-- loader.tsx
+|   |-- separator.tsx
+|   `-- typography.tsx
 |-- lib/
 |   `-- utils/
 |       `-- cn.tsx
@@ -264,8 +570,8 @@ Example:
 
 ```json
 {
-  "badge": {
-    "files": ["components/badge.tsx"]
+  "tooltip": {
+    "files": ["components/tooltip.tsx"]
   }
 }
 ```
