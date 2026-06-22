@@ -38,5 +38,10 @@
     "files": [
       "components/badge.tsx"
     ]
+  },
+  "input": {
+    "files": [
+      "components/input.tsx"
+    ]
   }
 }

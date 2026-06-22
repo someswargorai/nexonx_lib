@@ -38,5 +38,10 @@
     "files": [
       "jscomponents/badge.jsx"
     ]
+  },
+   "input": {
+    "files": [
+      "jscomponents/input.jsx"
+    ]
   }
 }
