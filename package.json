@@ -1,6 +1,6 @@
 {
   "name": "nexonx",
-  "version": "1.0.9",
+  "version": "1.0.11",
   "main": "cli.js",
   "bin": {
     "nexonx_cli": "./cli/cli.js"

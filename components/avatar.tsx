@@ -8,7 +8,7 @@ import { cn } from "../lib/utils/cn";
 const avatarVariants = cva(
   `
   relative inline-flex shrink-0 items-center justify-center
-  overflow-hidden select-none
+  select-none
   bg-zinc-100 text-zinc-600
   dark:bg-zinc-800 dark:text-zinc-300
 `,
@@ -36,7 +36,7 @@ const avatarVariants = cva(
 const statusVariants = cva(
   `
   absolute rounded-full
-  ring-2 ring-white dark:ring-zinc-950
+  ring-2 ring-white dark:ring-zinc-950 z-10
 `,
   {
     variants: {
@@ -128,34 +128,36 @@ export const Avatar = React.forwardRef<HTMLSpanElement, AvatarProps>(
         className={cn(avatarVariants({ shape, size }), className)}
         {...props}
       >
-        {src && imageState !== "error" && (
-          <img
-            src={src}
-            alt={alt || name || "Avatar"}
-            className={cn(
-              "h-full w-full object-cover transition-opacity duration-200",
-              imageState === "loaded" ? "opacity-100" : "opacity-0"
-            )}
-            onLoad={() => setImageState("loaded")}
-            onError={() => setImageState("error")}
-          />
-        )}
+        <span className="flex h-full w-full items-center justify-center overflow-hidden rounded-[inherit]">
+          {src && imageState !== "error" && (
+            <img
+              src={src}
+              alt={alt || name || "Avatar"}
+              className={cn(
+                "h-full w-full object-cover transition-opacity duration-200",
+                imageState === "loaded" ? "opacity-100" : "opacity-0"
+              )}
+              onLoad={() => setImageState("loaded")}
+              onError={() => setImageState("error")}
+            />
+          )}
 
-        {(imageState === "error" || (src && imageState === "loading")) && (
-          <span
-            className={cn(
-              "absolute inset-0 flex items-center justify-center font-medium",
-              imageState === "loading" && "animate-pulse"
-            )}
-            aria-hidden={imageState === "loading"}
-          >
-            {imageState === "error" && initials ? (
-              initials
-            ) : (
-              <User className="h-[55%] w-[55%]" strokeWidth={1.75} />
-            )}
-          </span>
-        )}
+          {(imageState === "error" || (src && imageState === "loading")) && (
+            <span
+              className={cn(
+                "absolute inset-0 flex items-center justify-center font-medium",
+                imageState === "loading" && "animate-pulse"
+              )}
+              aria-hidden={imageState === "loading"}
+            >
+              {imageState === "error" && initials ? (
+                initials
+              ) : (
+                <User className="h-[55%] w-[55%]" strokeWidth={1.75} />
+              )}
+            </span>
+          )}
+        </span>
 
         {status && showStatus && (
           <span

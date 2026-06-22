@@ -8,7 +8,7 @@ import { cn } from "../lib/utils/cn";
 const avatarVariants = cva(
   `
   relative inline-flex shrink-0 items-center justify-center
-  overflow-hidden select-none
+  select-none
   bg-zinc-100 text-zinc-600
   dark:bg-zinc-800 dark:text-zinc-300
 `,
@@ -30,13 +30,13 @@ const avatarVariants = cva(
       shape: "circle",
       size: "md",
     },
-  }
+  },
 );
 
 const statusVariants = cva(
   `
   absolute rounded-full
-  ring-2 ring-white dark:ring-zinc-950
+  ring-2 ring-white dark:ring-zinc-950 z-10
 `,
   {
     variants: {
@@ -58,7 +58,7 @@ const statusVariants = cva(
       status: "offline",
       size: "md",
     },
-  }
+  },
 );
 
 const statusPositionMap = {
@@ -85,46 +85,60 @@ function getInitials(name) {
   return (parts[0][0] + parts[parts.length - 1][0]).toUpperCase();
 }
 
-export const Avatar = React.forwardRef(
-  (
-    {
-      className,
-      shape = "circle",
-      size = "md",
-      src,
-      alt = "",
-      name,
-      status,
-      showStatus = true,
-      ...props
-    },
-    ref
-  ) => {
-    const [imageState, setImageState] = React.useState(
-      src ? "loading" : "error"
-    );
+/**
+ * @typedef {Object} AvatarProps
+ * @property {string} [src]
+ * @property {string} [alt]
+ * @property {string} [name]
+ * @property {"circle"|"square"} [shape]
+ * @property {"xs"|"sm"|"md"|"lg"|"xl"} [size]
+ * @property {"online"|"offline"|"away"|"busy"} [status]
+ * @property {boolean} [showStatus]
+ */
 
-    React.useEffect(() => {
-      setImageState(src ? "loading" : "error");
-    }, [src]);
+/**
+ * Avatar component with image, initials fallback, and status indicator.
+ *
+ * @type {React.ForwardRefExoticComponent<AvatarProps & React.HTMLAttributes<HTMLSpanElement> & React.RefAttributes<HTMLSpanElement>>}
+ */
+export const Avatar = React.forwardRef(function Avatar(
+  {
+    className,
+    shape = "circle",
+    size = "md",
+    src,
+    alt = "",
+    name,
+    status,
+    showStatus = true,
+    ...props
+  },
+  ref,
+) {
+  const [imageState, setImageState] = React.useState(src ? "loading" : "error");
 
-    const resolvedShape = shape ?? "circle";
-    const resolvedSize = size ?? "md";
-    const initials = name ? getInitials(name) : "";
+  React.useEffect(() => {
+    setImageState(src ? "loading" : "error");
+  }, [src]);
 
-    return (
-      <span
-        ref={ref}
-        className={cn(avatarVariants({ shape, size }), className)}
-        {...props}
-      >
+  const resolvedShape = shape ?? "circle";
+  const resolvedSize = size ?? "md";
+  const initials = name ? getInitials(name) : "";
+
+  return (
+    <span
+      ref={ref}
+      className={cn(avatarVariants({ shape, size }), className)}
+      {...props}
+    >
+      <span className="flex h-full w-full items-center justify-center overflow-hidden rounded-[inherit]">
         {src && imageState !== "error" && (
           <img
             src={src}
             alt={alt || name || "Avatar"}
             className={cn(
               "h-full w-full object-cover transition-opacity duration-200",
-              imageState === "loaded" ? "opacity-100" : "opacity-0"
+              imageState === "loaded" ? "opacity-100" : "opacity-0",
             )}
             onLoad={() => setImageState("loaded")}
             onError={() => setImageState("error")}
@@ -135,7 +149,7 @@ export const Avatar = React.forwardRef(
           <span
             className={cn(
               "absolute inset-0 flex items-center justify-center font-medium",
-              imageState === "loading" && "animate-pulse"
+              imageState === "loading" && "animate-pulse",
             )}
             aria-hidden={imageState === "loading"}
           >
@@ -146,21 +160,21 @@ export const Avatar = React.forwardRef(
             )}
           </span>
         )}
-
-        {status && showStatus && (
-          <span
-            className={cn(
-              statusVariants({ status, size }),
-              "absolute",
-              statusPositionMap[resolvedShape][resolvedSize]
-            )}
-            role="status"
-            aria-label={status}
-          />
-        )}
       </span>
-    );
-  }
-);
+
+      {status && showStatus && (
+        <span
+          className={cn(
+            statusVariants({ status, size }),
+            "absolute",
+            statusPositionMap[resolvedShape][resolvedSize],
+          )}
+          role="status"
+          aria-label={status}
+        />
+      )}
+    </span>
+  );
+});
 
 Avatar.displayName = "Avatar";

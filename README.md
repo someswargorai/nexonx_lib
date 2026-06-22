@@ -1,5 +1,7 @@
 # Nexonx
 📦 npm: https://www.npmjs.com/package/nexonx
+📖 docs: https://nexonx-docs.vercel.app
+
 
 <img
   src="https://res.cloudinary.com/dpacclyw4/image/upload/v1781975840/banner_in7wjs.png"
