@@ -1,6 +1,7 @@
 # Nexonx
-📦 npm: https://www.npmjs.com/package/nexonx
-📖 docs: https://nexonx-docs.vercel.app
+
+📦 npm: [nexonx](https://www.npmjs.com/package/nexonx)  
+📖 docs: [Documentation](https://nexonx-docs.vercel.app)
 
 
 <img
