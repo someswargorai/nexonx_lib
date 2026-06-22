@@ -1,0 +1,42 @@
+{
+  "card": {
+    "files": [
+      "jscomponents/card.jsx"
+    ]
+  },
+  "button": {
+    "files": [
+      "jscomponents/button.jsx"
+    ]
+  },
+  "loader": {
+    "files": [
+      "jscomponents/loader.jsx"
+    ]
+  },
+  "avatar": {
+    "files": [
+      "jscomponents/avatar.jsx"
+    ]
+  },
+  "separator": {
+    "files": [
+      "jscomponents/separator.jsx"
+    ]
+  },
+  "typography": {
+    "files": [
+      "jscomponents/typography.jsx"
+    ]
+  },
+  "icon": {
+    "files": [
+      "jscomponents/icon.jsx"
+    ]
+  },
+  "badge": {
+    "files": [
+      "jscomponents/badge.jsx"
+    ]
+  }
+}

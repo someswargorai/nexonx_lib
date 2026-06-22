@@ -7,17 +7,21 @@
   width="100%"
 />
 
-Nexonx is a small, source-first React component CLI for Tailwind projects. Instead of locking UI behind a package API, it copies clean `.tsx` components into your app so you can use them immediately, customize them freely, and keep complete control over your design system.
+Nexonx is a small, source-first React component CLI for Tailwind projects. Instead of locking UI behind a package API, it copies clean `.tsx` or `.jsx` components into your app so you can use them immediately, customize them freely, and keep complete control over your design system.
+
+**Supports both TypeScript and JavaScript** — the CLI asks which you prefer and copies the right files.
 
 Current package version: `1.0.7`
 
 ## What Makes It Useful
 
 - **Copy-and-own workflow**: add components directly into your project source.
+- **TypeScript & JavaScript**: choose your language at install time — get `.tsx` or `.jsx` files.
 - **Tailwind-native styling**: simple utility classes that are easy to change.
-- **TypeScript components**: typed props and variant support out of the box.
+- **Typed props and variants**: variant support via `class-variance-authority` out of the box.
 - **CLI-powered setup**: installs missing component dependencies when needed.
 - **Small registry**: only install the components you actually want.
+- **Batch install**: add multiple components at once, or use `all` to grab everything.
 
 ## Components
 
@@ -46,7 +50,27 @@ Then add a component:
 npx nexonx add button
 ```
 
-Nexonx copies the selected component into your project and prepares common dependencies such as Tailwind CSS, `clsx`, `tailwind-merge`, `@radix-ui/react-slot`, `class-variance-authority`, `lucide-react`, and `framer-motion` when they are missing.
+The CLI will prompt:
+
+```
+Do you want TypeScript or JavaScript? (ts/js):
+```
+
+Type `ts` for TypeScript (`.tsx`) or `js` for JavaScript (`.jsx`).
+
+### Add multiple components at once
+
+```bash
+npx nexonx add button card avatar
+```
+
+### Add all components
+
+```bash
+npx nexonx add all
+```
+
+Nexonx copies the selected component(s) into your project and prepares common dependencies such as Tailwind CSS, `clsx`, `tailwind-merge`, `@radix-ui/react-slot`, `class-variance-authority`, `lucide-react`, and `framer-motion` when they are missing.
 
 ## Avatar Usage
 
@@ -348,7 +372,7 @@ Use it:
 ```tsx
 import { Loader } from "@/components/loader";
 
-export function SaveButton({ saving }: { saving: boolean }) {
+export function SaveButton({ saving }) {
   return (
     <button disabled={saving}>
       {saving ? <Loader size="sm" /> : "Save"}
@@ -482,10 +506,22 @@ List available components:
 npx nexonx list
 ```
 
-Add a component:
+Add a single component:
 
 ```bash
-npx nexonx add <component>
+npx nexonx add button
+```
+
+Add multiple components at once:
+
+```bash
+npx nexonx add button card avatar
+```
+
+Add every component:
+
+```bash
+npx nexonx add all
 ```
 
 Global binary:
@@ -496,9 +532,20 @@ nexonx_cli add button
 nexonx_cli add card
 ```
 
+After running an `add` command, the CLI will prompt:
+
+```
+Do you want TypeScript or JavaScript? (ts/js):
+```
+
+- **`ts`** → copies `.tsx` files from `components/`
+- **`js`** → copies `.jsx` files from `jscomponents/`
+
 ## What Gets Copied
 
-Each component copies a single file into your project:
+Each component copies a single file into your project.
+
+**TypeScript (`.tsx`):**
 
 ```txt
 components/avatar.tsx
@@ -511,10 +558,24 @@ components/separator.tsx
 components/typography.tsx
 ```
 
-Nexonx also creates this utility when it is missing:
+**JavaScript (`.jsx`):**
 
 ```txt
-lib/utils/cn.tsx
+jscomponents/avatar.jsx
+jscomponents/badge.jsx
+jscomponents/button.jsx
+jscomponents/card.jsx
+jscomponents/icon.jsx
+jscomponents/loader.jsx
+jscomponents/separator.jsx
+jscomponents/typography.jsx
+```
+
+Nexonx also creates the `cn` utility when it is missing:
+
+```txt
+lib/utils/cn.ts   (TypeScript)
+lib/utils/cn.js   (JavaScript)
 ```
 
 Depending on the target app, the CLI may also create:
@@ -540,7 +601,7 @@ component_lib/
 |   `-- nexonx-banner.svg
 |-- cli/
 |   `-- cli.js
-|-- components/
+|-- components/          (TypeScript sources)
 |   |-- avatar.tsx
 |   |-- badge.tsx
 |   |-- button.tsx
@@ -549,11 +610,21 @@ component_lib/
 |   |-- loader.tsx
 |   |-- separator.tsx
 |   `-- typography.tsx
+|-- jscomponents/        (JavaScript sources)
+|   |-- avatar.jsx
+|   |-- badge.jsx
+|   |-- button.jsx
+|   |-- card.jsx
+|   |-- icon.jsx
+|   |-- loader.jsx
+|   |-- separator.jsx
+|   `-- typography.jsx
 |-- lib/
 |   `-- utils/
 |       `-- cn.tsx
 |-- registry/
-|   `-- components.json
+|   |-- components.json
+|   `-- jscomponents.json
 |-- package.json
 |-- package-lock.json
 `-- README.md
@@ -561,17 +632,27 @@ component_lib/
 
 ## Adding More Components
 
-1. Create the component inside `components/`.
-2. Register it in `registry/components.json`.
+1. Create the component inside `components/` (`.tsx`) **and** `jscomponents/` (`.jsx`).
+2. Register it in both `registry/components.json` and `registry/jscomponents.json`.
 3. Add every file the component needs to its `files` array.
 4. Test it from another app with the local CLI.
 
-Example:
+Example (`registry/components.json`):
 
 ```json
 {
   "tooltip": {
     "files": ["components/tooltip.tsx"]
+  }
+}
+```
+
+Example (`registry/jscomponents.json`):
+
+```json
+{
+  "tooltip": {
+    "files": ["jscomponents/tooltip.jsx"]
   }
 }
 ```
@@ -599,9 +680,9 @@ node path/to/component_lib/cli/cli.js add card
 ## Requirements
 
 - React
-- TypeScript
 - Tailwind CSS
 - npm, pnpm, or yarn
+- TypeScript (optional — JavaScript is fully supported)
 
 The CLI detects `pnpm-lock.yaml` and `yarn.lock`; otherwise, it uses npm.
 

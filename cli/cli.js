@@ -3,8 +3,10 @@
 const fs = require("fs");
 const path = require("path");
 const { execSync } = require("child_process");
+const readline = require("readline");
 
 const registry = require("../registry/components.json");
+const jsregistry = require("../registry/jscomponents.json");
 
 const command = process.argv[2];
 const args = process.argv.slice(3);
@@ -78,36 +80,79 @@ function ensurePackage(pkgName, dev = true) {
   console.log(`✔ ${pkgName} installed\n`);
 }
 
-function hasTailwind() {
+function ensureTailwindV4() {
   const pkg = getPackageJson();
+  const twVersion = pkg.dependencies?.tailwindcss || pkg.devDependencies?.tailwindcss;
+  
+  let needsInstall = false;
+  
+  if (!twVersion) {
+    needsInstall = true;
+  } else {
+  
+    const isV4 = twVersion.includes('4.') || twVersion.includes('latest') || twVersion.includes('next');
+    if (!isV4) {
+      console.log(`⚡ Detected older Tailwind CSS version (${twVersion}). Upgrading to v4...`);
+      needsInstall = true;
+    }
+  }
 
-  return pkg.dependencies?.tailwindcss || pkg.devDependencies?.tailwindcss;
-}
+  const postcssExists = pkg.dependencies?.["@tailwindcss/postcss"] || pkg.devDependencies?.["@tailwindcss/postcss"];
+  if (!postcssExists) {
+    needsInstall = true;
+  }
 
-function installTailwind() {
-  console.log("⚡ TailwindCSS not detected. Installing...\n");
-
-  const pm = getPackageManager();
-
-  if (pm === "npm")
-    runInstall("npm install -D tailwindcss  @tailwindcss/postcss postcss");
-
-  if (pm === "pnpm")
-    runInstall("pnpm add -D tailwindcss  @tailwindcss/postcss postcss");
-
-  if (pm === "yarn")
-    runInstall("yarn add -D tailwindcss @tailwindcss/postcss postcss");
-
-  console.log("\n✔ Tailwind installed\n");
+  if (needsInstall) {
+    console.log("⚡ Installing Tailwind CSS v4...");
+    const pm = getPackageManager();
+    if (pm === "npm") {
+      runInstall("npm install -D tailwindcss@latest @tailwindcss/postcss@latest postcss@latest");
+    } else if (pm === "pnpm") {
+      runInstall("pnpm add -D tailwindcss@latest @tailwindcss/postcss@latest postcss@latest");
+    } else if (pm === "yarn") {
+      runInstall("yarn add -D tailwindcss@latest @tailwindcss/postcss@latest postcss@latest");
+    }
+    console.log("✔ Tailwind CSS v4 installed\n");
+  }
 }
 
 function ensurePostcssConfig() {
-  const configPath = path.join(projectRoot, "postcss.config.mjs");
+  const configPaths = [
+    path.join(projectRoot, "postcss.config.js"),
+    path.join(projectRoot, "postcss.config.cjs"),
+    path.join(projectRoot, "postcss.config.mjs"),
+    path.join(projectRoot, "postcss.config.json")
+  ];
 
-  if (fs.existsSync(configPath)) return;
+  for (const configPath of configPaths) {
+    if (fs.existsSync(configPath)) {
+      let content = fs.readFileSync(configPath, "utf8");
+      
+      if (content.includes("tailwindcss") || content.includes("autoprefixer")) {
+        console.log(`⚡ Updating ${path.basename(configPath)} for Tailwind v4...`);
+        // Replace old v3 plugins with v4 plugin (object format, handles quotes)
+        content = content.replace(/['"]?tailwindcss['"]?:\s*\{[\s\S]*?\}(,?)/g, '"@tailwindcss/postcss": {}$1');
+        content = content.replace(/['"]?autoprefixer['"]?:\s*\{[\s\S]*?\}(,?)/g, '');
+        // Remove v3 plugins that clash with v4 (object format)
+        content = content.replace(/['"]?postcss-import['"]?:\s*\{[\s\S]*?\}(,?)/g, '');
+        content = content.replace(/['"]?tailwindcss\/nesting['"]?:\s*\{[\s\S]*?\}(,?)/g, '');
+        
+        // Replace old v3 plugins with v4 plugin (array format)
+        content = content.replace(/['"]tailwindcss['"](,?)/g, '"@tailwindcss/postcss"$1');
+        content = content.replace(/['"]autoprefixer['"](,?)/g, '');
+        // Remove v3 plugins that clash with v4 (array format)
+        content = content.replace(/['"]postcss-import['"](,?)/g, '');
+        content = content.replace(/['"]tailwindcss\/nesting['"](,?)/g, '');
+        
+        fs.writeFileSync(configPath, content);
+        console.log(`✔ ${path.basename(configPath)} updated\n`);
+      }
+      return;
+    }
+  }
 
   console.log("⚡ Creating postcss.config.mjs\n");
-
+  const configPath = path.join(projectRoot, "postcss.config.mjs");
   const config = `
 const config = {
   plugins: {
@@ -119,7 +164,6 @@ export default config;
 `;
 
   fs.writeFileSync(configPath, config.trim());
-
   console.log("✔ postcss.config.mjs created\n");
 }
 
@@ -128,6 +172,8 @@ function ensureTailwindImport() {
     "app/globals.css",
     "src/app/globals.css",
     "styles/globals.css",
+    "src/index.css",
+    "index.css"
   ];
 
   for (const p of cssPaths) {
@@ -135,12 +181,23 @@ function ensureTailwindImport() {
 
     if (fs.existsSync(full)) {
       let css = fs.readFileSync(full, "utf8");
+      let changed = false;
+
+      if (css.includes("@tailwind base") || css.includes("@tailwind components") || css.includes("@tailwind utilities")) {
+        css = css.replace(/@tailwind base;?\n?/g, "");
+        css = css.replace(/@tailwind components;?\n?/g, "");
+        css = css.replace(/@tailwind utilities;?\n?/g, "");
+        changed = true;
+      }
 
       if (!css.includes('@import "tailwindcss"')) {
         css = `@import "tailwindcss";\n` + css;
-        fs.writeFileSync(full, css);
+        changed = true;
+      }
 
-        console.log(`✔ Tailwind imported in ${p}\n`);
+      if (changed) {
+        fs.writeFileSync(full, css);
+        console.log(`✔ Tailwind updated in ${p}\n`);
       }
 
       return;
@@ -148,34 +205,45 @@ function ensureTailwindImport() {
   }
 }
 
-function createClsx() {
+function createClsx(language) {
   const dir = path.join(projectRoot, "lib/utils");
 
   fs.mkdirSync(dir, {
     recursive: true,
   });
 
-  const file = path.join(dir, "cn.ts");
+  const ext = language === "typescript" ? "ts" : "js";
+  const file = path.join(dir, `cn.${ext}`);
 
   if (fs.existsSync(file)) return;
 
-  const content = `import { clsx } from "clsx";
+  let content;
+
+  if (language === "typescript") {
+    content = `import { clsx } from "clsx";
 import { twMerge } from "tailwind-merge";
 
 export function cn(...inputs: any[]) {
   return twMerge(clsx(inputs));
 }
 `;
+  } else {
+    content = `import { clsx } from "clsx";
+import { twMerge } from "tailwind-merge";
+
+export function cn(...inputs) {
+  return twMerge(clsx(inputs));
+}
+`;
+  }
 
   fs.writeFileSync(file, content);
 
-  console.log("✔ Added lib/utils/cn.ts");
+  console.log(`✔ Added lib/utils/cn.${ext}`);
 }
 
 function setupTailwind() {
-  ensurePackage("tailwindcss");
-  ensurePackage("@tailwindcss/postcss");
-  ensurePackage("postcss");
+  ensureTailwindV4();
 
   ensurePackage("clsx");
   ensurePackage("tailwind-merge");
@@ -185,8 +253,6 @@ function setupTailwind() {
   ensurePostcssConfig();
 
   ensureTailwindImport();
-
-  createClsx();
 }
 
 function setupLucide() {
@@ -257,15 +323,6 @@ function copyFiles(files) {
   return { addedCount, skippedCount };
 }
 
-/**
- * Resolves the list of component names the user asked for.
- * Supports:
- *   nexonx add button
- *   nexonx add button card avatar
- *   nexonx add all
- * "all" can appear anywhere in the args and short-circuits to every
- * registry entry, deduped, case-insensitively matched against registry keys.
- */
 function resolveRequestedComponents(rawNames) {
   if (rawNames.length === 0) {
     return { names: [], invalid: [] };
@@ -299,7 +356,7 @@ function resolveRequestedComponents(rawNames) {
   return { names: valid, invalid };
 }
 
-function addComponents(rawNames) {
+function addComponents(rawNames, language) {
   const { names, invalid } = resolveRequestedComponents(rawNames);
 
   if (invalid.length > 0) {
@@ -319,17 +376,20 @@ function addComponents(rawNames) {
 
   logTitle();
 
-  console.log(`Adding: ${names.join(", ")}\n`);
+  console.log(`Adding: ${names.join(", ")}  (${language})\n`);
 
   setupTailwind();
+  createClsx(language);
   setupLucide();
   setupFramerMotion();
+
+  const activeRegistry = language === "typescript" ? registry : jsregistry;
 
   let totalAdded = 0;
   let totalSkipped = 0;
 
   names.forEach((name) => {
-    const data = registry[name];
+    const data = activeRegistry[name];
     console.log(`\n— ${name} —`);
 
     const { addedCount, skippedCount } = copyFiles(data.files);
@@ -345,17 +405,45 @@ function addComponents(rawNames) {
   }
 }
 
+function askLanguage() {
+  return new Promise((resolve) => {
+    const rl = readline.createInterface({
+      input: process.stdin,
+      output: process.stdout,
+    });
+
+    rl.question(
+      "Do you want TypeScript or JavaScript? (ts/js): ",
+      (answer) => {
+        rl.close();
+        const normalized = answer.trim().toLowerCase();
+
+        if (
+          normalized === "js" ||
+          normalized === "javascript" ||
+          normalized === "jsx"
+        ) {
+          resolve("javascript");
+        } else {
+          resolve("typescript");
+        }
+      }
+    );
+  });
+}
+
 if (command === "list") {
   listComponents();
   process.exit(0);
 }
 
 if (command === "add") {
-  addComponents(args);
-  process.exit(process.exitCode || 0);
-}
-
-console.log(`
+  askLanguage().then((language) => {
+    addComponents(args, language);
+    process.exit(process.exitCode || 0);
+  });
+} else {
+  console.log(`
 Nexonx CLI
 
 Commands:
@@ -364,3 +452,4 @@ Commands:
   npx nexonx add <component1> <component2> ...
   npx nexonx add all
 `);
+}
