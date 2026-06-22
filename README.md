@@ -11,7 +11,7 @@ Nexonx is a small, source-first React component CLI for Tailwind projects. Inste
 
 **Supports both TypeScript and JavaScript** — the CLI asks which you prefer and copies the right files.
 
-Current package version: `1.0.7`
+Current package version: `1.0.8`
 
 ## What Makes It Useful
 
