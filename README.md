@@ -14,7 +14,7 @@ Nexonx is a small, source-first React component CLI for Tailwind projects. Inste
 
 **Supports both TypeScript and JavaScript** — the CLI asks which you prefer and copies the right files.
 
-Current package version: `1.0.13`
+Current package version: `1.2.0`
 
 ## What Makes It Useful
 
@@ -38,6 +38,9 @@ Current package version: `1.0.13`
 | `loader` | `npx nexonx add loader` | Spinning loading indicators for async states and skeleton screens. |
 | `separator` | `npx nexonx add separator` | Horizontal or vertical dividers between UI sections. |
 | `typography` | `npx nexonx add typography` | Semantic headings, body text, labels, and blockquotes with consistent styling. |
+| `input` | `npx nexonx add input` | Flexible input fields for forms, search bars, authentication flows, and data entry with consistent styling and validation support. |
+| `slider` | `npx nexonx add slider` | Interactive sliders for adjusting values, ranges, and settings with smooth dragging and visual feedback. |
+| `dialog` | `npx nexonx add dialog` | Fully customizable dialog components for confirmations, forms, settings, and interactive content with smooth animations, keyboard accessibility, and flexible styling. |
 
 ## Quick Start
 
@@ -559,6 +562,9 @@ components/icon.tsx
 components/loader.tsx
 components/separator.tsx
 components/typography.tsx
+components/input.tsx
+components/slider.tsx
+components/dialog.tsx
 ```
 
 **JavaScript (`.jsx`):**
@@ -572,6 +578,9 @@ jscomponents/icon.jsx
 jscomponents/loader.jsx
 jscomponents/separator.jsx
 jscomponents/typography.jsx
+jscomponents/input.jsx
+jscomponents/slider.jsx
+jscomponents/dialog.jsx
 ```
 
 Nexonx also creates the `cn` utility when it is missing:
@@ -612,6 +621,9 @@ component_lib/
 |   |-- icon.tsx
 |   |-- loader.tsx
 |   |-- separator.tsx
+|   |-- input.tsx
+|   |-- slider.tsx
+|   |-- dialog.tsx
 |   `-- typography.tsx
 |-- jscomponents/        (JavaScript sources)
 |   |-- avatar.jsx
@@ -621,6 +633,9 @@ component_lib/
 |   |-- icon.jsx
 |   |-- loader.jsx
 |   |-- separator.jsx
+|   |-- input.jsx
+|   |-- slider.jsx
+|   |-- dialog.jsx
 |   `-- typography.jsx
 |-- lib/
 |   `-- utils/

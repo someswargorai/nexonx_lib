@@ -220,10 +220,10 @@ function createClsx(language) {
   let content;
 
   if (language === "typescript") {
-    content = `import { clsx } from "clsx";
+    content = `import { clsx, type ClassValue } from "clsx";
 import { twMerge } from "tailwind-merge";
 
-export function cn(...inputs: any[]) {
+export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs));
 }
 `;

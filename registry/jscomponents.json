@@ -43,5 +43,10 @@
     "files": [
       "jscomponents/input.jsx"
     ]
+  },
+  "slider":{
+    "files":[
+      "jscomponents/slider.tsx"
+    ]
   }
 }
