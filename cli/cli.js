@@ -404,6 +404,55 @@ function addComponents(rawNames, language) {
     process.exitCode = 1;
   }
 }
+function removeComponents(rawNames) {
+  const { names, invalid } = resolveRequestedComponents(rawNames);
+  
+  if (invalid.length > 0) {
+    invalid.forEach((name) => {
+      console.log(`❌ Component "${name}" not found`);
+    })
+  }
+  
+
+  if (names.length === 0) {
+    if (invalid.length === 0) {
+      console.log("❌ Please specify a component\n");
+    }
+    process.exit(1);
+  }
+
+  logTitle();
+
+  console.log(`Removing: ${names.join(", ")}\n`);
+  
+  let totalRemoved = 0;
+  let totalSkipped = 0;
+
+  names.forEach((name) => {
+    const data = registry[name];
+    console.log(`\n— ${name} —`);
+
+    data.files.forEach((file) => {
+      const destination = path.join(projectRoot, file);
+
+      if (fs.existsSync(destination)) {
+        fs.unlinkSync(destination);
+        console.log(`✔ Removed ${file}`);
+        totalRemoved++;
+      } else {
+        console.log(`⚠ Skipped ${file} (does not exist)`);
+        totalSkipped++;
+      }
+    });
+  });
+
+  console.log("\n✨ Done!");
+  console.log(`   ${totalRemoved} file(s) removed, ${totalSkipped} skipped.\n`);
+
+  if (invalid.length > 0) {
+    process.exitCode = 1;
+  }
+}
 
 function askLanguage() {
   return new Promise((resolve) => {
@@ -442,6 +491,9 @@ if (command === "add") {
     addComponents(args, language);
     process.exit(process.exitCode || 0);
   });
+} else if (command === "remove") {
+  removeComponents(args);
+  process.exit(process.exitCode || 0);
 } else {
   console.log(`
 Nexonx CLI

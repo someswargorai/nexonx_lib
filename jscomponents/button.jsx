@@ -63,10 +63,43 @@ const buttonVariants = cva(
     },
   }
 );
+const buttonAnimations = cva("", {
+    variants: {
+  animation: {
+    none: "",
+
+    shine: `
+        relative overflow-hidden
+        before:absolute
+        before:inset-0
+        before:-translate-x-full
+        before:bg-gradient-to-r
+        before:from-transparent
+        before:via-white/30
+        before:to-transparent
+        before:transition-transform
+        hover:before:translate-x-full
+    `,
+
+    glow: `
+        shadow-lg
+        hover:shadow-blue-500/40
+        hover:shadow-2xl
+    `,
+
+    pulse: `
+        hover:animate-pulse
+    `,
+
+    bounce: `
+        hover:-translate-y-1
+    `,
+}}})
 
 export function Button({
   className,
   variant,
+  animation,
   size,
   asChild = false,
   ...props
@@ -80,6 +113,7 @@ export function Button({
           variant,
           size,
         }),
+        buttonAnimations({ animation }),
         className
       )}
       {...props}
