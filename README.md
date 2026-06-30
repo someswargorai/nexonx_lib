@@ -14,7 +14,7 @@ Nexonx is a small, source-first React component CLI for Tailwind projects. Inste
 
 **Supports both TypeScript and JavaScript** — the CLI asks which you prefer and copies the right files.
 
-Current package version: `1.2.0`
+Current package version: `1.3.0`
 
 ## What Makes It Useful
 
@@ -41,6 +41,7 @@ Current package version: `1.2.0`
 | `input` | `npx nexonx add input` | Flexible input fields for forms, search bars, authentication flows, and data entry with consistent styling and validation support. |
 | `slider` | `npx nexonx add slider` | Interactive sliders for adjusting values, ranges, and settings with smooth dragging and visual feedback. |
 | `dialog` | `npx nexonx add dialog` | Fully customizable dialog components for confirmations, forms, settings, and interactive content with smooth animations, keyboard accessibility, and flexible styling. |
+| `audioplayer` | `npx nexonx add audio-player` | Fully customizable audio player with play/pause controls, seek bar, volume control, keyboard accessibility, smooth interactions, and flexible styling. |
 
 ## Quick Start
 
@@ -565,6 +566,7 @@ components/typography.tsx
 components/input.tsx
 components/slider.tsx
 components/dialog.tsx
+components/audio-player.tsx
 ```
 
 **JavaScript (`.jsx`):**
@@ -581,6 +583,7 @@ jscomponents/typography.jsx
 jscomponents/input.jsx
 jscomponents/slider.jsx
 jscomponents/dialog.jsx
+components/audio-player.jsx
 ```
 
 Nexonx also creates the `cn` utility when it is missing:
@@ -624,6 +627,7 @@ component_lib/
 |   |-- input.tsx
 |   |-- slider.tsx
 |   |-- dialog.tsx
+|   |-- audio-player.tsx
 |   `-- typography.tsx
 |-- jscomponents/        (JavaScript sources)
 |   |-- avatar.jsx
@@ -636,6 +640,7 @@ component_lib/
 |   |-- input.jsx
 |   |-- slider.jsx
 |   |-- dialog.jsx
+|   |-- audio-player.jsx
 |   `-- typography.jsx
 |-- lib/
 |   `-- utils/
